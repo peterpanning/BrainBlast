@@ -1,6 +1,8 @@
 #ifndef FINALPROJECT_DICOMSERIES_H 
 #define FINALPROJECT_DICOMSERIES_H
 
+// TODO: Is storing these header files here best practice?
+
 #include "itkImage.h"
 #include "itkGDCMImageIO.h"
 #include "itkGDCMSeriesFileNames.h"

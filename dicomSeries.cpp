@@ -1,7 +1,5 @@
 #include "dicomSeries.h"
 
-// ITK libraries for converting a DICOM series to a 3D itkImage
-
 // We want a class capable of storing and reusing a series of DICOM 
 // images, using the relevant ITK or VTK libraries as appropriate
 
@@ -24,6 +22,8 @@
 
 dicomSeries::dicomSeries() {
 	dirName = new char('.');
+	// nameGenerator comes from an ITK library and may not be 
+	// suitable for VTK interactions with the series
 	nameGenerator = NamesGeneratorType::New();
 	nameGenerator->SetUseSeriesDetails(true);
   	nameGenerator->AddSeriesRestriction("0008|0021");
@@ -33,6 +33,8 @@ dicomSeries::dicomSeries() {
 
 dicomSeries::dicomSeries(char* directoryName) {
 	dirName = directoryName;
+	// nameGenerator comes from an ITK library and may not be 
+	// suitable for VTK interactions with the series
 	nameGenerator = NamesGeneratorType::New();
 	nameGenerator->SetUseSeriesDetails(true);
   	nameGenerator->AddSeriesRestriction("0008|0021");
@@ -46,6 +48,8 @@ void dicomSeries::printSeries() {
 	// I'm not sure how to use an automatically typed variable
 	// as a parameter, so this is what we're doing for now
 	const SeriesIdContainer &seriesUID = nameGenerator->GetSeriesUIDs();
+	// These appear to be of type NSt3__111__wrap_iterIPKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEEE
+  	// So it is probably necessary to use auto to declare and initialize them
 	auto seriesItr = seriesUID.begin();
     auto seriesEnd = seriesUID.end();	
     if (seriesItr == seriesEnd) {
@@ -74,6 +78,8 @@ int dicomSeries::to3D() {
   	// PixelType defined in dicomSeries.h
   	using ImageType = itk::Image< PixelType, Dimension >; 
   	const SeriesIdContainer &seriesUID = nameGenerator->GetSeriesUIDs();
+  	// These appear to be of type NSt3__111__wrap_iterIPKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEEE
+  	// So it is probably necessary to use auto to declare and initialize them
   	auto seriesItr = seriesUID.begin();
     auto seriesEnd = seriesUID.end();
 
@@ -109,6 +115,7 @@ int dicomSeries::to3D() {
         		std::cout << ex << std::endl;
         		continue;
         	}
+        	std::cout <<"Done writing " << outFileName << std::endl;
   		}
   	}
   	catch (itk::ExceptionObject &ex) {
