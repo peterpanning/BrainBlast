@@ -36,7 +36,7 @@ find_package(OpenGL REQUIRED)
 # include_directories for all of these? 
 include_directories(${FLTK_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIRS})
 
-add_executable(finalProject main.cpp dicomSeries.cpp vtkExample.cpp)
+add_executable(finalProject main.cpp dicomSeries.cpp vtkExample.cpp vtkDicomRenderer.cpp)
 
 # CMake apparently uses its own internal names for libraries in this command, according to 
 # https://github.com/IngwiePhoenix/FLTK/blob/master/README.CMake.txt
