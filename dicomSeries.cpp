@@ -103,7 +103,7 @@ int dicomSeries::to3D() {
       		using WriterType = itk::ImageFileWriter< ImageType >;
       		WriterType::Pointer writer = WriterType::New();
 
-      		std::string outFileName = dirName + std::string("/") + seriesIdentifier + ".nrrd";
+      		std::string outFileName = dirName + std::string("/scanAsVolume.nrrd");
 
       		writer->SetFileName(outFileName);
       		writer->UseCompressionOn();
