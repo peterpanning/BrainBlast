@@ -11,20 +11,27 @@
 
 #include "vtkExample.h"
 
+#include "vtkDicomRenderer.h"
+
+// Using VTK to render a DICOM series as a volume?
+
+
 
 // Use of argc and argv here are from the FLTK Basics example http://www.fltk.org/doc-1.3/basics.html#basics_writing
 
 int main(int argc, char** argv)
 {
+  if (argc < 2)
+    {
+    std::cerr << "Usage: " << std::endl;
+    std::cerr << argv[0] << " [DicomDirectory]";
+    std::cerr << "\nIf DicomDirectory is not specified, current directory is used\n";
+    }
+
   // The target directory is the second argument entered at the command line
   char* dirName = argv[1];
-  // Make a new dicomSeries from it
-  dicomSeries dcm(dirName);
-  // Write it to a new .nrrd file
-  dcm.printSeries();
-  dcm.to3D();
 
-  vtkExample v;
+  vtkDicomRenderer v(dirName);
   v.render();
 
   // From the FLTK Hello World Window example
@@ -36,13 +43,6 @@ int main(int argc, char** argv)
   box->labeltype(FL_SHADOW_LABEL);
   window->end();
   window->show(argc, argv); 
-
-  if (argc < 2)
-    {
-    std::cerr << "Usage: " << std::endl;
-    std::cerr << argv[0] << " [DicomDirectory]";
-    std::cerr << "\nIf DicomDirectory is not specified, current directory is used\n";
-    }
 
   return 0;
 }
