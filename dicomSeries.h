@@ -15,6 +15,7 @@ public:
 	dicomSeries(char*);
 	int to3D();
 	void printSeries();
+	int watershed()
 protected:
 private:
 	// All DICOM series use 16-bit colors
@@ -23,6 +24,8 @@ private:
 	using NamesGeneratorType = itk::GDCMSeriesFileNames;
   	NamesGeneratorType::Pointer nameGenerator;
   	using SeriesIdContainer = std::vector< std::string >;
+  	// Should have an attribute which it can use to store and return the
+  	// actual series for processing and passing to vtk
 };
 
 #endif
