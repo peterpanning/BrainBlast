@@ -53,6 +53,14 @@ On the other hand, if you're like me and haven't compiled a library from source 
 
 
 
+####An addendum:
+
+I eventually found that I needed to rebuild ITK to include the VTKGlue Module, 
+
+TODO: Cite the thesis. 
+
+
+
 ##Building the Project:
 
 Remember to run `cmake -DCMAKE_CXX_FLAGS=-std=c++11` from within the build directory rather than the source directory (see below), followed by `make` to generate the executable.

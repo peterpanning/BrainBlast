@@ -13,11 +13,19 @@
 #include <vtkVolumeProperty.h>
 #include <vtkPiecewiseFunction.h>
 #include <vtkColorTransferFunction.h>
+#include <itkImageToVTKImageFilter.h>
+#include "dicomSeries.h"
+
+// From the itkVtkBridge class
+
+#include <itkCastImageFilter.h>
+#include <itkImageSeriesReader.h>
 
 class vtkDicomRenderer{
 public:
 	vtkDicomRenderer();
-	vtkDicomRenderer(char* dirName);
+	vtkDicomRenderer(char*);
+	vtkDicomRenderer(dicomSeries::ReaderType::Pointer);
 	void render();
 private:
   	vtkSmartPointer<vtkImageData> imageData = vtkSmartPointer<vtkImageData>::New();
