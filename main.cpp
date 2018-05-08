@@ -9,9 +9,11 @@
 
 // Our custom VTK functions and classes
 
-#include "vtkExample.h"
-
 #include "vtkDicomRenderer.h"
+
+// The ITK/VTK connector
+
+#include "itkVtkBridge.h"
 
 // Using VTK to render a DICOM series as a volume?
 
@@ -31,7 +33,16 @@ int main(int argc, char** argv)
   // The target directory is the second argument entered at the command line
   char* dirName = argv[1];
 
-  vtkDicomRenderer v(dirName);
+  dicomSeries* d = new dicomSeries(dirName);
+
+  // TODO: Reader should not be public
+
+  dicomSeries::ReaderType::Pointer reader = d->reader;
+
+  //auto connector = itkVtkBridge(reader);
+
+  vtkDicomRenderer v(reader);
+  //vtkDicomRenderer v(dirName);
   v.render();
 
   // From the FLTK Hello World Window example
