@@ -26,6 +26,7 @@ public:
 	vtkDicomRenderer();
 	vtkDicomRenderer(char*);
 	vtkDicomRenderer(dicomSeries::ReaderType::Pointer);
+	void initializeRenderer();
 	void render();
 private:
   	vtkSmartPointer<vtkImageData> imageData = vtkSmartPointer<vtkImageData>::New();
