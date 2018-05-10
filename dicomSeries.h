@@ -11,61 +11,56 @@
 #include "itkRescaleIntensityImageFilter.h"
 
 class dicomSeries{
-	// Using allows us to basically define types as variables.
-
+	// Using allows us to define new types.
 
 	// DICOMs use floats to represent pixels
-	using InPixelType = float;
-	// And VTK uses signed shorts
-	using OutPixelType = signed short;
+	using DicomPixelType = float;
 	
 	// Used later to set the reader's filenames
-	using InputNamesGeneratorType = itk::GDCMSeriesFileNames;
-	// TODO: Are we still using these? 
-	//using SeriesIdContainer = std::vector< std::string >;
+	using DicomNamesGeneratorType = itk::GDCMSeriesFileNames;
+
 	// Used to hold the names of files before passing them to reader
 	using FileNamesContainer = std::vector< std::string >;
 
 	// Used later to set the reader's IO
 	using ImageIOType = itk::GDCMImageIO;
-	
-
-
-	// TODO: Are we still using this? 
-	// const SeriesIdContainer &seriesUID;
 
 public:
-	// These variables, especially Input/OutputImageType and
-	// ReaderType, are public because they will be used in 
-	// many other classes 
-	// We are reading in a 3D image represented with floats, and
-	// converting it to a 3D image represent with signed shorts
+
+	// **VARIABLES AND TYPEDEFS**
+
+	// These variables are public for now because returning them 
+	// with getters didn't work 
+
+	// We are reading in a 3D image represented with floats
 	const static unsigned int Dimension = 3;
-	using InputImageType = itk::Image<InPixelType, Dimension>;
-	using OutputImageType = itk::Image<OutPixelType, Dimension>;
+	using DicomImage = itk::Image<DicomPixelType, Dimension>;
 
 	// Reader is an ITK image series reader
-	using ReaderType = itk::ImageSeriesReader< InputImageType >;
+	using ReaderType = itk::ImageSeriesReader< DicomImage >;
 	ReaderType::Pointer reader;
+
+	// 	**CONSTRUCTORS**
+
 	// Default Constructor
 	dicomSeries();
+
 	// Constructor given a filepath
 	dicomSeries(char*);
-	// Prints the series
-	// void printSeries();
+
+	// **OTHER FUNCTIONS**
+
 	// Performs watershed segmentation
-	int watershed();
+	int gaussianSmoothing();
+	int ccRegionGrowing();
+
 	// Returns this object's reader
 	//ReaderType::Pointer getReader();
   	
-protected:
 private:
+
 	char* dirName;
-	// Pointer to a reader, initialized in constructor
-	
-	// Pointer to a NamesGenerator, initialized in constructor
-  	InputNamesGeneratorType::Pointer nameGenerator;
-  	// 
+  	DicomNamesGeneratorType::Pointer nameGenerator;
   	FileNamesContainer fileNames;
   	ImageIOType::Pointer dicomIO;
 };
