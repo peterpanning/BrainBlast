@@ -9,15 +9,7 @@
 
 // Our custom VTK functions and classes
 
-#include "vtkExample.h"
-
 #include "vtkDicomRenderer.h"
-
-// Using VTK to render a DICOM series as a volume?
-
-
-
-// Use of argc and argv here are from the FLTK Basics example http://www.fltk.org/doc-1.3/basics.html#basics_writing
 
 int main(int argc, char** argv)
 {
@@ -25,13 +17,23 @@ int main(int argc, char** argv)
     {
     std::cerr << "Usage: " << std::endl;
     std::cerr << argv[0] << " [DicomDirectory]";
-    std::cerr << "\nIf DicomDirectory is not specified, current directory is used\n";
+    return 0;
     }
 
   // The target directory is the second argument entered at the command line
   char* dirName = argv[1];
 
-  vtkDicomRenderer v(dirName);
+  // Construct a new dicomSeries object from that directory
+  dicomSeries* d = new dicomSeries(dirName);
+
+  // TODO: Reader should not be public
+
+  dicomSeries::ReaderType::Pointer reader = d->reader;
+
+  //auto connector = itkVtkBridge(reader);
+
+  vtkDicomRenderer v(reader);
+  //vtkDicomRenderer v(dirName);
   v.render();
 
   // From the FLTK Hello World Window example
