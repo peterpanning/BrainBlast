@@ -12,9 +12,6 @@ if(VTK_FOUND)
     include(${VTK_USE_FILE})
 endif(VTK_FOUND)
 
-# The FLTK CMake guide recommends running this with NO_MODULE, but doing so causes problems
-# when running CMake. So, I dunno, man. 
-
 find_package(FLTK REQUIRED)
 
 # If find_package can't find FLTK, setting the path to it may fix that. 

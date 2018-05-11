@@ -7,7 +7,6 @@
 #include "itkGDCMImageIO.h"
 #include "itkGDCMSeriesFileNames.h"
 #include "itkImageSeriesReader.h"
-#include "itkImageFileWriter.h"
 #include "itkRescaleIntensityImageFilter.h"
 
 class dicomSeries{

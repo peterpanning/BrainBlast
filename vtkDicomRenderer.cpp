@@ -23,14 +23,14 @@ vtkDicomRenderer::vtkDicomRenderer(dicomSeries::ReaderType::Pointer reader) {
 	const static unsigned int Dimension = 3;
 	using VtkPixelType = signed short;
 	using VtkImage = itk::Image<VtkPixelType, Dimension>;
+	using IntensityFilter = itk::RescaleIntensityImageFilter< dicomSeries::DicomImage, dicomSeries::DicomImage >;
 	using CastingType = itk::CastImageFilter<dicomSeries::DicomImage, VtkImage>;
 	using ConnectorType = itk::ImageToVTKImageFilter<VtkImage>;
 	// TODO: Should be in dicomSeries class? 
-	using IntensityFilter = itk::RescaleIntensityImageFilter< dicomSeries::DicomImage, dicomSeries::DicomImage >;
 
+	IntensityFilter::Pointer rescaleFilter = IntensityFilter::New();
 	CastingType::Pointer caster = CastingType::New();
   	ConnectorType::Pointer connector = ConnectorType::New();
-	IntensityFilter::Pointer rescaleFilter = IntensityFilter::New();
 
 	// Rescale the DICOM image that we read in 
 	// One advantage of having the rescaling filter in this class is that 
