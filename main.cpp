@@ -9,7 +9,7 @@
 
 // Our custom VTK functions and classes
 
-#include "vtkExample.h"
+// #include "vtkExample.h"
 
 #include "vtkDicomRenderer.h"
 
