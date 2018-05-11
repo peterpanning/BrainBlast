@@ -57,7 +57,7 @@ vtkDicomRenderer::vtkDicomRenderer(){
 
 vtkDicomRenderer::vtkDicomRenderer(char* dirName){
 	reader->SetDirectoryName(dirName);
-	reader->SetDirectoryName("../finalProject/DICOMs");
+	// reader->SetDirectoryName("../finalProject/DICOMs");
 	reader->Update();
 	imageData->ShallowCopy(reader->GetOutput());
 
