@@ -19,5 +19,6 @@ class smoothing{
   using WriterType = itk::ImageFileWriter< ImageType >;
 
 public:
-  applySmoothing(ReaderType::point);
+  void applySmoothing(ReaderType::Pointer);
 };
+#endif
