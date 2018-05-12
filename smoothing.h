@@ -4,7 +4,6 @@
 #include "itkImageSeriesReader.h"
 #include "itkImageSeriesWriter.h"
 #include "itkImage.h"
-// #include "itkBinaryThresholdImageFilter.h"
 #include "itkGradientAnisotropicDiffusionImageFilter.h"
 #include "itkRescaleIntensityImageFilter.h"
 
@@ -19,7 +18,6 @@ class smoothing{
   using WriterType = itk::ImageSeriesWriter< ImageType, ImageType >;
 
 public:
-	smoothing(){
   void applySmoothing(ReaderType::Pointer);
 };
 #endif
