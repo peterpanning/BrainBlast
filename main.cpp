@@ -6,6 +6,7 @@
 // Our custom ITK functions and classes
 
 #include "dicomSeries.h"
+#include "smoothing.h"
 
 // Our custom VTK functions and classes
 
@@ -29,6 +30,10 @@ int main(int argc, char** argv)
   // TODO: Reader should not be public
 
   dicomSeries::ReaderType::Pointer reader = d->reader;
+
+  // Declare smoothing and send files to be smoothed
+  smoothing* smooth = new smoothing();
+  smooth->applySmoothing(reader);
 
   //auto connector = itkVtkBridge(reader);
 
