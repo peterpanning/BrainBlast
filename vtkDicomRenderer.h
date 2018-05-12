@@ -13,19 +13,18 @@
 #include <vtkVolumeProperty.h>
 #include <vtkPiecewiseFunction.h>
 #include <vtkColorTransferFunction.h>
-#include <itkImageToVTKImageFilter.h>
 #include "dicomSeries.h"
+#include "itkToVtkBridge.h"
 
 // From the itkVtkBridge class
 
-#include <itkCastImageFilter.h>
-#include <itkImageSeriesReader.h>
+
 
 class vtkDicomRenderer{
 public:
 	vtkDicomRenderer();
 	vtkDicomRenderer(char*);
-	vtkDicomRenderer(dicomSeries::ReaderType::Pointer);
+	vtkDicomRenderer(itkToVtkBridge::ConnectorType::Pointer);
 	void initializeRenderer();
 	void render();
 private:

@@ -12,9 +12,6 @@ if(VTK_FOUND)
     include(${VTK_USE_FILE})
 endif(VTK_FOUND)
 
-# The FLTK CMake guide recommends running this with NO_MODULE, but doing so causes problems
-# when running CMake. So, I dunno, man. 
-
 find_package(FLTK REQUIRED)
 
 # If find_package can't find FLTK, setting the path to it may fix that. 
@@ -36,7 +33,7 @@ find_package(OpenGL REQUIRED)
 # include_directories for all of these? 
 include_directories(${FLTK_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIRS})
 
-add_executable(finalProject main.cpp dicomSeries.cpp vtkDicomRenderer.cpp)
+add_executable(finalProject main.cpp dicomSeries.cpp vtkDicomRenderer.cpp itkToVtkBridge.cpp)
 
 # CMake apparently uses its own internal names for libraries in this command, according to 
 # https://github.com/IngwiePhoenix/FLTK/blob/master/README.CMake.txt

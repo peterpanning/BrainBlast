@@ -7,8 +7,9 @@
 #include "itkGDCMImageIO.h"
 #include "itkGDCMSeriesFileNames.h"
 #include "itkImageSeriesReader.h"
-#include "itkImageFileWriter.h"
-#include "itkRescaleIntensityImageFilter.h"
+#include "itkConnectedThresholdImageFilter.h"
+#include "itkMaskImageFilter.h"
+
 
 class dicomSeries{
 	// Using allows us to define new types.
@@ -27,10 +28,7 @@ class dicomSeries{
 
 public:
 
-	// **VARIABLES AND TYPEDEFS**
-
-	// These variables are public for now because returning them 
-	// with getters didn't work 
+	// **VARIABLES AND TYPEDEFS** 
 
 	// We are reading in a 3D image represented with floats
 	const static unsigned int Dimension = 3;
@@ -38,7 +36,11 @@ public:
 
 	// Reader is an ITK image series reader
 	using ReaderType = itk::ImageSeriesReader< DicomImage >;
-	ReaderType::Pointer reader;
+
+	// Connected Component threshold filter for region growing 
+	using ConnectedThresholdFilter = itk::ConnectedThresholdImageFilter< DicomImage, DicomImage >;
+
+	using MaskImageFilter = itk::MaskImageFilter<DicomImage, DicomImage>;
 
 	// 	**CONSTRUCTORS**
 
@@ -50,19 +52,27 @@ public:
 
 	// **OTHER FUNCTIONS**
 
+	DicomImage::Pointer GetOutput();
+
+	// Void because it will modify private variables, not return a value
+
+	DicomImage::Pointer RegionGrow();
+
 	// Performs watershed segmentation
-	int gaussianSmoothing();
+	void gaussianSmoothing(ReaderType::Pointer);
 	int ccRegionGrowing();
 
-	// Returns this object's reader
-	//ReaderType::Pointer getReader();
-  	
+	// Making these public to be able to access them in main
+
+
 private:
 
 	char* dirName;
   	DicomNamesGeneratorType::Pointer nameGenerator;
   	FileNamesContainer fileNames;
   	ImageIOType::Pointer dicomIO;
+  	ReaderType::Pointer reader;
+  	ConnectedThresholdFilter::Pointer region;
 };
 
 #endif
