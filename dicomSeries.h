@@ -7,7 +7,6 @@
 #include "itkGDCMImageIO.h"
 #include "itkGDCMSeriesFileNames.h"
 #include "itkImageSeriesReader.h"
-#include "itkRescaleIntensityImageFilter.h"
 
 class dicomSeries{
 	// Using allows us to define new types.
@@ -26,10 +25,7 @@ class dicomSeries{
 
 public:
 
-	// **VARIABLES AND TYPEDEFS**
-
-	// These variables are public for now because returning them 
-	// with getters didn't work 
+	// **VARIABLES AND TYPEDEFS** 
 
 	// We are reading in a 3D image represented with floats
 	const static unsigned int Dimension = 3;
@@ -37,7 +33,7 @@ public:
 
 	// Reader is an ITK image series reader
 	using ReaderType = itk::ImageSeriesReader< DicomImage >;
-	ReaderType::Pointer reader;
+	
 
 	// 	**CONSTRUCTORS**
 
@@ -49,12 +45,11 @@ public:
 
 	// **OTHER FUNCTIONS**
 
+	DicomImage::Pointer GetOutput();
+
 	// Performs watershed segmentation
 	int gaussianSmoothing();
 	int ccRegionGrowing();
-
-	// Returns this object's reader
-	//ReaderType::Pointer getReader();
   	
 private:
 
@@ -62,6 +57,7 @@ private:
   	DicomNamesGeneratorType::Pointer nameGenerator;
   	FileNamesContainer fileNames;
   	ImageIOType::Pointer dicomIO;
+  	ReaderType::Pointer reader;
 };
 
 #endif

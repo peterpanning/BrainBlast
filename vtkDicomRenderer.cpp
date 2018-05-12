@@ -18,41 +18,15 @@ vtkDicomRenderer::vtkDicomRenderer(char* dirName){
 	vtkDicomRenderer::initializeRenderer();
 }
 
-vtkDicomRenderer::vtkDicomRenderer(dicomSeries::ReaderType::Pointer reader) {
-	// This constructor converts the dicomSeries itk-based dicom reader to a vtk volume
-	const static unsigned int Dimension = 3;
-	using VtkPixelType = signed short;
-	using VtkImage = itk::Image<VtkPixelType, Dimension>;
-	using IntensityFilter = itk::RescaleIntensityImageFilter< dicomSeries::DicomImage, dicomSeries::DicomImage >;
-	using CastingType = itk::CastImageFilter<dicomSeries::DicomImage, VtkImage>;
-	using ConnectorType = itk::ImageToVTKImageFilter<VtkImage>;
-	// TODO: Should be in dicomSeries class? 
+vtkDicomRenderer::vtkDicomRenderer(itkToVtkBridge::ConnectorType::Pointer connector) {
 
-	IntensityFilter::Pointer rescaleFilter = IntensityFilter::New();
-	CastingType::Pointer caster = CastingType::New();
-  	ConnectorType::Pointer connector = ConnectorType::New();
-
-	// Rescale the DICOM image that we read in 
-	// One advantage of having the rescaling filter in this class is that 
-	// it allows the constructor to take in the reader rather than the 
-	// altered output from the reader, which might be harder to define
-	// in type
-	rescaleFilter->SetInput(reader->GetOutput());
-	rescaleFilter->SetOutputMinimum(0);
-  	rescaleFilter->SetOutputMaximum(255);
-
-  	// Cast new image intensity values to be the correct data type (unsigned short)
-	caster->SetInput( rescaleFilter->GetOutput() ); 
-	// Pass this to the ImageToVTKImageFilter connector
-	connector->SetInput(caster->GetOutput()); 
-	connector->Update(); 
-
-	// vtkImageData object takes in the itk::ImageToVTKImageFilter connector's output
+	// This constructor takes in a connection from an itkToVtkBridge and renders it. 
 
 	imageData->DeepCopy(connector->GetOutput());
 
 	vtkDicomRenderer::initializeRenderer();
 }
+
 
 // **END CONSTRUCTORS**
 

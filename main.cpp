@@ -11,6 +11,8 @@
 
 #include "vtkDicomRenderer.h"
 
+#include "itkToVtkBridge.h"
+
 int main(int argc, char** argv)
 {
   if (argc < 2)
@@ -26,25 +28,12 @@ int main(int argc, char** argv)
   // Construct a new dicomSeries object from that directory
   dicomSeries* d = new dicomSeries(dirName);
 
-  // TODO: Reader should not be public
+  // Make a converter
+  itkToVtkBridge* bridge = new itkToVtkBridge(d->GetOutput());
 
-  dicomSeries::ReaderType::Pointer reader = d->reader;
+  vtkDicomRenderer v(bridge->connector);
 
-  //auto connector = itkVtkBridge(reader);
-
-  vtkDicomRenderer v(reader);
-  //vtkDicomRenderer v(dirName);
   v.render();
-
-  // From the FLTK Hello World Window example
-  Fl_Window *window = new Fl_Window(340,180);
-  Fl_Box *box = new Fl_Box(20,40,300,100,"Hello, World!");
-  box->box(FL_UP_BOX);
-  box->labelfont(FL_BOLD+FL_ITALIC);
-  box->labelsize(36);
-  box->labeltype(FL_SHADOW_LABEL);
-  window->end();
-  window->show(argc, argv); 
 
   return 0;
 }

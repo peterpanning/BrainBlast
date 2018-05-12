@@ -28,3 +28,7 @@ dicomSeries::dicomSeries(char* directoryName) {
 	reader->SetFileNames(fileNames);
 	reader->Update();
 }
+
+dicomSeries::DicomImage::Pointer dicomSeries::GetOutput() {
+	return reader->GetOutput();
+}
