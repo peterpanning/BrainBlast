@@ -13,9 +13,9 @@ class smoothing{
   const static unsigned int Dimension = 3; 
   using PixelType = unsigned char;
   using ImageType = itk::Image< PixelType, Dimension>;
-  using ReaderType = itk::itkImageFileReader<ImageType>;
-  using GradientFilterType = itk::itkGradientAnisotropicDiffusionImageFilter<ImageType, ImageType>;
-  using RescaleType = itk::RescaleIntensityImgeFilter<ImageType, ImageType>;
+  using ReaderType = itk::ImageFileReader<ImageType>;
+  using GradientFilterType = itk::GradientAnisotropicDiffusionImageFilter<ImageType, ImageType>;
+  using RescaleType = itk::RescaleIntensityImageFilter<ImageType, ImageType>;
   using WriterType = itk::ImageFileWriter< ImageType >;
 
 public:
