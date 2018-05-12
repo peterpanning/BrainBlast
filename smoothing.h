@@ -11,7 +11,7 @@
 class smoothing{
   // need to define the new types
   const static unsigned int Dimension = 3; 
-  using PixelType = unsighend char;
+  using PixelType = unsigned char;
   using ImageType = itk::Image< PixelType, Dimension>;
   using ReaderType = itk::itkImageFileReader<ImageType>;
   using GradientFilterType = itk::itkGradientAnisotropicDiffusionImageFilter<ImageType, ImageType>;
