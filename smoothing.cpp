@@ -16,17 +16,6 @@ using BinaryThresholdFilterType = itk::itkBinaryThresholdImageFilter< ImageType,
 using WriterType = itk::ImageFileWriter< ImageType >;
 
 
-int main( int argc, char * argv[] )
-{
-  // Binary Thresholding
-  // low, high, out, in
-  // 30 150 0 255
-  applyBinaryThresholding();
-  
-
-  return EXIT_SUCCESS;
-}
-
 smoothing::applyBinaryThresholding(char* inImage,int lowThreshold, int highThreshold, int outValue, int inValue, char* outImage){ 
   // ttps://itk.org/ITKExamples/src/Filtering/Thresholding/ThresholdAnImageUsingBinary/Documentation.html?highlight=threshold%20binary
 
