@@ -29,7 +29,8 @@ int main(int argc, char** argv)
   dicomSeries* d = new dicomSeries(dirName);
 
   // Make a converter
-  itkToVtkBridge* bridge = new itkToVtkBridge(d->GetOutput());
+  itkToVtkBridge* bridge = new itkToVtkBridge(d->RegionGrow());
+  //itkToVtkBridge* bridge = new itkToVtkBridge(d->GetOutput());
 
   vtkDicomRenderer v(bridge->connector);
 

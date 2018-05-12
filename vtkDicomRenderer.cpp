@@ -34,7 +34,7 @@ void vtkDicomRenderer::initializeRenderer() {
 	renderer->SetBackground(0.1, 0.2, 0.3);
 
 	renderWindow->AddRenderer(renderer);
-	renderWindow->SetSize(500, 500);
+	renderWindow->SetSize(1000, 1000);
 
 	renderWindowInteractor->SetInteractorStyle(interactorStyle);
 	renderWindowInteractor->SetRenderWindow(renderWindow);
