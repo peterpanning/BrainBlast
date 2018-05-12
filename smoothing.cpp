@@ -3,6 +3,9 @@
 
 #include "smoothing.h"
 
+smoothing::smoothing(){
+
+}
 smoothing::applySmoothing(ReaderType::Pointer reader){ 
   
 // setting up filters

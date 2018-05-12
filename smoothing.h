@@ -16,9 +16,10 @@ class smoothing{
   using ReaderType = itk::ImageSeriesReader<ImageType>;
   using GradientFilterType = itk::GradientAnisotropicDiffusionImageFilter<ImageType, ImageType>;
   using RescaleType = itk::RescaleIntensityImageFilter<ImageType, ImageType>;
-  using WriterType = itk::ImageSeriesWriter< ImageType >;
+  using WriterType = itk::ImageSeriesWriter< ImageType, ImageType >;
 
 public:
+	smoothing(){
   void applySmoothing(ReaderType::Pointer);
 };
 #endif
