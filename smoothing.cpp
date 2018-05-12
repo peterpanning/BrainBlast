@@ -15,8 +15,7 @@ using ReaderType = itk::itkImageFileReader<ImageType>;
 using BinaryThresholdFilterType = itk::itkBinaryThresholdImageFilter< ImageType, ImageType>;
 using WriterType = itk::ImageFileWriter< ImageType >;
 
-
-smoothing::applyBinaryThresholding(char* inImage,int lowThreshold, int highThreshold, int outValue, int inValue, char* outImage){ 
+smoothing::applyBinaryThresholding(char* inImage){ 
   // ttps://itk.org/ITKExamples/src/Filtering/Thresholding/ThresholdAnImageUsingBinary/Documentation.html?highlight=threshold%20binary
 
   auto lowerThresh = static_cast<PixelType>(30);
