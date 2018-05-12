@@ -32,8 +32,8 @@ int main(int argc, char** argv)
   dicomSeries::ReaderType::Pointer reader = d->reader;
 
   // Declare smoothing and send files to be smoothed
-  smoothing* smooth = new smoothing();
-  smooth->applySmoothing(reader);
+  smoothing* s = new smoothing();
+  s->applySmoothing(reader);
 
   //auto connector = itkVtkBridge(reader);
 

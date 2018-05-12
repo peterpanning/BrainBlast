@@ -3,7 +3,7 @@
 
 #include "smoothing.h"
 
-smoothing::applySmoothing(ReaderType::Pointer reader){ 
+void smoothing::applySmoothing(ReaderType::Pointer reader){ 
   
 // setting up filters
 GradientFilterType::Pointer gradientFilter = GradientFilterType::New();
