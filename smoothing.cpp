@@ -1,13 +1,7 @@
 // https://itk.org/ITKExamples/src/Filtering/Thresholding/ThresholdAnImageUsingBinary/Documentation.html?highlight=threshold%20binary
 // output at 50 looks to give the best result. 
 
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
-#include "itkImage.h"
-#include "itkBinaryThresholdImageFilter.h"
-#include "itkGradientAnisotropicDiffusionImageFilter.h"
-#include "itkRescaleIntensityImageFilter.h"
-
+#include "smoothing.h"
 
 smoothing::applySmoothing(ReaderType::Pointer reader){ 
   
