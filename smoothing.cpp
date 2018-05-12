@@ -22,20 +22,15 @@ BinaryThresholdFilterType::Pointer binaryFilter = BinaryThresholdFilterType::New
 
 using WriterType = itk::ImageFileWriter< ImageType >;
 
-
-
-
+  // Applying binary thresholding
   // https://itk.org/ITKExamples/src/Filtering/Thresholding/ThresholdAnImageUsingBinary/Documentation.html?highlight=threshold%20binary
 
+  // setting up parameters, these seem to be the best configuration from testing
   auto lowerThresh = static_cast<PixelType>(30);
   auto upperThresh = static_cast<PixelType>(150);
   auto OutsideValue = static_cast<PixelType>(0);
   auto InsideValue = static_cast<PixelType>(255);
 
-  // ReaderType::Pointer reader = ReaderType::New();
-  // reader->SetFileName( dicom);
-
-  
   binaryFilter->SetInput( reader->GetOutput() );
   binaryFilter->SetLowerThreshold( LowerThreshold );
   binaryFilter->SetUpperThreshold( UpperThreshold );
