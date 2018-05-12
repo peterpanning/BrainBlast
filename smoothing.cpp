@@ -8,6 +8,7 @@ void smoothing::applySmoothing(ReaderType::Pointer reader){
 // setting up filters
 GradientFilterType::Pointer gradientFilter = GradientFilterType::New();
 RescaleType::Pointer rescaler = RescaleType::New();
+CastingFilterType::Pointer caster = CastingFilterType::New();
 
 // apply fliter
 // gradient filter 
@@ -20,7 +21,10 @@ rescaler->SetInput(gradientFilter->GetOutput());
 rescaler->SetOutputMinimum(0);
 rescaler->SetOutputMaximum(255);
 rescaler->Update();
-reader = rescaler->GetOutput();
+
+// reader = rescaler->GetOutput();
+caster->SetInput(rescaler->GetOutput());
+reader = caster;
 
 } // end applySmoothing
 
