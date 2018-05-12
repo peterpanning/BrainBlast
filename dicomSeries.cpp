@@ -1,4 +1,8 @@
 #include "dicomSeries.h"
+#include "itkGradientAnisotropicDiffusionImageFilter.h"
+#include "itkCurvatureFlowImageFilter.h"
+#include "itkSmoothingRecursiveGaussianImageFilter.h"
+#include "itkDiscreteGaussianImageFilter.h"
 
 dicomSeries::dicomSeries() {
 	// This is a failsafe only, should only be called in the process of 
@@ -34,17 +38,31 @@ dicomSeries::DicomImage::Pointer dicomSeries::GetOutput() {
 }
 
 dicomSeries::DicomImage::Pointer dicomSeries::RegionGrow() {
+	// tried using a gradientAnisotropicDiffusionImageFilter, didn't look very good
+	//using SmoothingFilter = itk::GradientAnisotropicDiffusionImageFilter<DicomImage, DicomImage>; //mediocre output
+	//using SmoothingFilter = itk::SmoothingRecursiveGaussianImageFilter<DicomImage, DicomImage>; // no output? 
+	using SmoothingFilter = itk::CurvatureFlowImageFilter<DicomImage, DicomImage>; // mediocre output
+	//using SmoothingFilter = itk::DiscreteGaussianImageFilter<DicomImage, DicomImage>; // no output?
+
+	SmoothingFilter::Pointer smoothing = SmoothingFilter::New();
 	region = ConnectedThresholdFilter::New();
+
+	smoothing->SetInput(reader->GetOutput());
+	smoothing->SetNumberOfIterations(5);
+	smoothing->SetTimeStep(.1);
+	//smoothing->SetVariance(4);
+	smoothing->Update();
+
 	// The Houndsfield intensity values for bounds are a total guess, adjust experimentally
-	dicomSeries::DicomPixelType lowerBound = 0;
-	dicomSeries::DicomPixelType upperBound = 50;
+	dicomSeries::DicomPixelType lowerBound = 25;
+	dicomSeries::DicomPixelType upperBound = 45;
 	DicomImage::IndexType index;
 	// ImageJ seems to indicate this is x, y, z, 512x512x91 images
 	index[0] = 256;
 	index[1] = 256;
-	index[2] = 22;
+	index[2] = 20;
 
-	region->SetInput(reader->GetOutput());
+	region->SetInput(smoothing->GetOutput());
 	region->SetLower(lowerBound);
 	region->SetUpper(upperBound);
 	region->SetReplaceValue(255);
@@ -58,5 +76,5 @@ dicomSeries::DicomImage::Pointer dicomSeries::RegionGrow() {
 	mask->SetMaskImage(region->GetOutput());
 	mask->Update();
 
-	return region->GetOutput();
+	return mask->GetOutput();
 }

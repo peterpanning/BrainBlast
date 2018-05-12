@@ -59,7 +59,7 @@ public:
 	DicomImage::Pointer RegionGrow();
 
 	// Performs watershed segmentation
-	int gaussianSmoothing();
+	void gaussianSmoothing(ReaderType::Pointer);
 	int ccRegionGrowing();
 
 	// Making these public to be able to access them in main
