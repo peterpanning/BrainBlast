@@ -10,7 +10,7 @@
 
 class smoothing{
   // need to define the new types
-  constexpr unsigned int Dimension = 3; 
+  const static unsigned int Dimension = 3; 
   using PixelType = unsighend char;
   using ImageType = itk::Image< PixelType, Dimension>;
   using ReaderType = itk::itkImageFileReader<ImageType>;
