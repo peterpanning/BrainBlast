@@ -5,10 +5,34 @@
 #include "itkImageFileWriter.h"
 #include "itkImage.h"
 #include "itkBinaryThresholdImageFilter.h"
-
+#include "itkGradientAnisotropicDiffusionImageFilter.h"
+#include "itkRescaleIntensityImageFilter.h"
 
 
 smoothing::applySmoothing(ReaderType::Pointer reader){ 
+  
+// setting up filters
+GradientFilterType::Pointer gradientFilter = GradientFilterType::New();
+RescaleType::Pointer rescaler = RescaleType::New();
+
+// apply fliter
+// gradient filter 
+gradientFilter->SetInput(reader->GetOutput());
+gradientFilter->SetNumberOfIterations (5);
+gradientFilter->SetTimeStep(.121);
+gradientFilter->SetConductanceParameter(1.0);
+
+rescaler->SetInput(gradientFilter->GetOutput());
+rescaler->SetOutputMinimum(0);
+rescaler->SetOutputMaximum(255);
+rescaler->Update();
+reader = rescaler->GetOutput();
+
+} // end applySmoothing
+
+// rescale
+
+/*smoothing::applySmoothing(ReaderType::Pointer reader){ 
 
 using PixelType = unsigned char;
 constexpr unsigned int Dimension = 3; 
@@ -19,6 +43,9 @@ using ReaderType = itk::itkImageFileReader<ImageType>;
 // setting up filters
 using BinaryThresholdFilterType = itk::itkBinaryThresholdImageFilter< ImageType, ImageType>;
 BinaryThresholdFilterType::Pointer binaryFilter = BinaryThresholdFilterType::New();
+
+using RecursiveGaussianFilterType = itk::SmoothingRecursiveGaussianImageFilter<ImageType, ImageType>;
+RecursiveGaussianFilterType::Pointer smoothFilter = RecursiveGaussianFilterType::New();
 
 using WriterType = itk::ImageFileWriter< ImageType >;
 
@@ -37,5 +64,5 @@ using WriterType = itk::ImageFileWriter< ImageType >;
   binaryFilter->SetOutsideValue( OutsideValue );
   binaryFilter->SetInsideValue( InsideValue );
 
-
-}// end applyBinaryThresholding
+  // take output from binary thresholding and apply Gaussian Smoothing
+}// end applyBinaryThresholding*/
