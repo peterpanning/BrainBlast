@@ -16,11 +16,16 @@ constexpr unsigned int Dimension = 3;
 using ImageType = itk::Image< PixelType, Dimension>;
 using ReaderType = itk::itkImageFileReader<ImageType>;
 
+// setting up filters
 using BinaryThresholdFilterType = itk::itkBinaryThresholdImageFilter< ImageType, ImageType>;
+BinaryThresholdFilterType::Pointer binaryFilter = BinaryThresholdFilterType::New();
 
 using WriterType = itk::ImageFileWriter< ImageType >;
 
-  // ttps://itk.org/ITKExamples/src/Filtering/Thresholding/ThresholdAnImageUsingBinary/Documentation.html?highlight=threshold%20binary
+
+
+
+  // https://itk.org/ITKExamples/src/Filtering/Thresholding/ThresholdAnImageUsingBinary/Documentation.html?highlight=threshold%20binary
 
   auto lowerThresh = static_cast<PixelType>(30);
   auto upperThresh = static_cast<PixelType>(150);
@@ -30,7 +35,7 @@ using WriterType = itk::ImageFileWriter< ImageType >;
   // ReaderType::Pointer reader = ReaderType::New();
   // reader->SetFileName( dicom);
 
-  BinaryThresholdFilterType::Pointer binaryFilter = BinaryThresholdFilterType::New();
+  
   binaryFilter->SetInput( reader->GetOutput() );
   binaryFilter->SetLowerThreshold( LowerThreshold );
   binaryFilter->SetUpperThreshold( UpperThreshold );
