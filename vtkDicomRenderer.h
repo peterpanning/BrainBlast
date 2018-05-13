@@ -13,6 +13,7 @@
 #include <vtkVolumeProperty.h>
 #include <vtkPiecewiseFunction.h>
 #include <vtkColorTransferFunction.h>
+#include <vtkMarchingCubes.h>
 #include "dicomSeries.h"
 #include "itkToVtkBridge.h"
 
@@ -40,6 +41,7 @@ private:
   	vtkSmartPointer<vtkPiecewiseFunction> scalarOpacity = vtkSmartPointer<vtkPiecewiseFunction>::New();
   	vtkSmartPointer<vtkColorTransferFunction> color = vtkSmartPointer<vtkColorTransferFunction>::New();
   	vtkSmartPointer<vtkVolume> volume = vtkSmartPointer<vtkVolume>::New();
+  	vtkSmartPointer<vtkMarchingCubes> surface = vtkSmartPointer<vtkMarchingCubes>::New();
 };
 
 #endif

@@ -22,7 +22,17 @@ vtkDicomRenderer::vtkDicomRenderer(itkToVtkBridge::ConnectorType::Pointer connec
 
 	// This constructor takes in a connection from an itkToVtkBridge and renders it. 
 
+	std::cout << "Copying image data...\n";
+
 	imageData->DeepCopy(connector->GetOutput());
+
+	std::cout << "Generating surfact...\n";
+
+	surface->SetInputData(imageData);
+	surface->ComputeNormalsOn();
+	surface->SetValue(0,180);
+
+	std::cout << "Initializing Renderer...\n";
 
 	vtkDicomRenderer::initializeRenderer();
 }
@@ -43,41 +53,53 @@ void vtkDicomRenderer::initializeRenderer() {
 	volumeMapper->SetRequestedRenderModeToGPU();
 	volumeMapper->SetInputData(imageData);
 
+	// Good shading makes an object look more 3D
 	volumeProperty->ShadeOn();
+	// Setting interpolation to linear allows for "high-quality rendering" 
+	//https://www.vtk.org/Wiki/VTK/Examples/Cxx/Medical/MedicalDemo4
 	volumeProperty->SetInterpolationTypeToLinear();
 
+	// Ambient property is inversely related to shading impact
 	//volumeProperty->SetAmbient(0.1);
 	//volumeProperty->SetAmbient(1);
-	volumeProperty->SetAmbient(0.5);
+	volumeProperty->SetAmbient(1);
 
 
-	volumeProperty->SetDiffuse(0.6);
-	volumeProperty->SetSpecular(0.2);
+	// Diffuse and specular are directly related to shading impact
+	volumeProperty->SetDiffuse(0.1);
+	volumeProperty->SetSpecular(0.1);
 	//volumeProperty->SetSpecularPower(10.0);
 
+
 	gradientOpacity->AddPoint(0.0, 0.0);
-	gradientOpacity->AddPoint(1000.0, 1.0);
-	//gradientOpacity->AddPoint(2000.0, 1.0);
+	gradientOpacity->AddPoint(50, .25);
+	gradientOpacity->AddPoint(100.0, .5);
 	volumeProperty->SetGradientOpacity(gradientOpacity);
 
 	//scalarOpacity->AddPoint(-800.0, 0.0);
 	//scalarOpacity->AddPoint(-750.0, 0.0);
 	//scalarOpacity->AddPoint(-350.0, 0.0);
 	//scalarOpacity->AddPoint(-300.0, 0.0);
-	//scalarOpacity->AddPoint(-200.0, 0.0);
-	scalarOpacity->AddPoint( 100.0, 1.0);
-	scalarOpacity->AddPoint(1000.0, 1.0);
-	scalarOpacity->AddPoint(1150.0, 0.0);
+	// Grey matter has intensities between 25 and 45
+	scalarOpacity->AddPoint(0, 0.0);
+	scalarOpacity->AddPoint(25, .75);
+	scalarOpacity->AddPoint(45, .75);
+	// Apparently most flesh has intensities between 500 and 1000 according to 
+	// https://www.paraview.org/Wiki/VTK/Examples/Cxx/Medical/MedicalDemo4
+	scalarOpacity->AddPoint(500.0, 0);
+	scalarOpacity->AddPoint(1000.0, 0);
+	scalarOpacity->AddPoint(1150.0, 0);
 	//scalarOpacity->AddPoint(2750.0, 0.0);
 	//scalarOpacity->AddPoint(2976.0, 0.0);
 	//scalarOpacity->AddPoint(3000.0, 0.0);
 	volumeProperty->SetScalarOpacity(scalarOpacity);
 
-	color->AddRGBPoint(-750.0, 0.08, 0.05, 0.03);
-	color->AddRGBPoint(-350.0, 0.2, 0.25, 0.16);
-	color->AddRGBPoint(0.0, 0.4, 0.4, 0.4);
-	color->AddRGBPoint(1050.0, 0.60, 0.60, 0.60);
-	color->AddRGBPoint(2000.0, 0.8, 0.8, 0.8);
+	//color->AddRGBPoint(-750.0, 0.08, 0.05, 0.03);
+	//color->AddRGBPoint(-350.0, 0.2, 0.25, 0.16);
+	color->AddRGBPoint(0.0, 0.8, 0.2, 0.2);
+	color->AddRGBPoint(500.0, .8, .2, .2);
+	//color->AddRGBPoint(1000.0, 0, 0, 0);
+	//color->AddRGBPoint(1150.0, 0, 0, 0);
 	volumeProperty->SetColor(color);
 
 	volume->SetMapper(volumeMapper);
@@ -89,7 +111,7 @@ void vtkDicomRenderer::initializeRenderer() {
 
 void vtkDicomRenderer::render(){
   // This starts the event loop and as a side effect causes an initial render.
+  std::cout << "Rendering!\n";
   renderWindow->Render();
   renderWindowInteractor->Start();
-
 }

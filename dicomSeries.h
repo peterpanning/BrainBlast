@@ -37,8 +37,7 @@ public:
 	// Reader is an ITK image series reader
 	using ReaderType = itk::ImageSeriesReader< DicomImage >;
 
-	// Connected Component threshold filter for region growing 
-	using ConnectedThresholdFilter = itk::ConnectedThresholdImageFilter< DicomImage, DicomImage >;
+	
 
 	using MaskImageFilter = itk::MaskImageFilter<DicomImage, DicomImage>;
 
@@ -72,7 +71,6 @@ private:
   	FileNamesContainer fileNames;
   	ImageIOType::Pointer dicomIO;
   	ReaderType::Pointer reader;
-  	ConnectedThresholdFilter::Pointer region;
 };
 
 #endif
