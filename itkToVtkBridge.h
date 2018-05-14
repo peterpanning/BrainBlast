@@ -1,7 +1,6 @@
 #ifndef FINALPROJECT_ITKTOVTKBRIDGE_H 
 #define FINALPROJECT_ITKTOVTKBRIDGE_H
 
-// TODO: Is storing these header files here best practice?
 #include <itkCastImageFilter.h>
 #include <itkImageSeriesReader.h>
 #include <itkImageToVTKImageFilter.h>
@@ -19,7 +18,6 @@ public:
 	itkToVtkBridge(dicomSeries::DicomImage::Pointer);
 	ConnectorType::Pointer connector;
 	
-protected:
 private:	
 	using CastingType = itk::CastImageFilter<dicomSeries::DicomImage, VtkImage>;
 	CastingType::Pointer caster;

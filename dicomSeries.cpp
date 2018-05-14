@@ -7,6 +7,7 @@
 #include "itkBinaryBallStructuringElement.h"
 #include "itkBinaryMorphologicalOpeningImageFilter.h"
 #include "itkNeighborhoodConnectedImageFilter.h"
+#include "itkBinaryMorphologicalClosingImageFilter.h"
 
 dicomSeries::dicomSeries() {
 	// This is a failsafe only, should only be called in the process of 
@@ -43,63 +44,58 @@ dicomSeries::DicomImage::Pointer dicomSeries::GetOutput() {
 
 dicomSeries::DicomImage::Pointer dicomSeries::RegionGrow() {
 
-	// Anisotropic difficusion supposedly preserves edges. uses iterations/time
-	using SmoothingFilter = itk::GradientAnisotropicDiffusionImageFilter<DicomImage, DicomImage>; // decent output, still has most of the chest cavity
-	// curvature gradient used in master's thesis. uses iterations/time
-	//using SmoothingFilter = itk::CurvatureFlowImageFilter<DicomImage, DicomImage>; // mediocre output
-	// gaussian filters appeared to have no output, use sigma/variance
-	//using SmoothingFilter = itk::SmoothingRecursiveGaussianImageFilter<DicomImage, DicomImage>; // no output? 
-	//using SmoothingFilter = itk::DiscreteGaussianImageFilter<DicomImage, DicomImage>; // no output?
-
-	// opening also supposedly preserves edges while reducing noise, though it might not smooth?
-
-	using StructuringElement = itk::BinaryBallStructuringElement<DicomPixelType, Dimension>;
+	// Morphological Operations requires a structuring element
+	using StructuringElement = itk::BinaryBallStructuringElement 
+	<DicomPixelType, Dimension>;
 	StructuringElement structure;
-	structure.SetRadius(3);
+	structure.SetRadius(2);
 	structure.CreateStructuringElement();
 
 	std::cout << "Opening...\n";
 
-	using OpeningFilter = itk::BinaryMorphologicalOpeningImageFilter <DicomImage, DicomImage, StructuringElement>;
+	using OpeningFilter = itk::BinaryMorphologicalOpeningImageFilter 
+	<DicomImage, DicomImage, StructuringElement>;
     OpeningFilter::Pointer opening = OpeningFilter::New();
     opening->SetInput(reader->GetOutput());
     opening->SetKernel(structure);
     opening->Update();
 
+    std::cout << "Closing...\n";
+
+    using ClosingFilter = itk::BinaryMorphologicalClosingImageFilter 
+    <DicomImage, DicomImage, StructuringElement>;
+    ClosingFilter::Pointer closing = ClosingFilter::New();
+    closing->SetInput(opening->GetOutput());
+    closing->SetKernel(structure);
+    closing->Update();
+
     std::cout << "Smoothing...\n";
 
-
+	// Anisotropic edge-preserving smoothing
+	using SmoothingFilter = itk::GradientAnisotropicDiffusionImageFilter
+	<DicomImage, DicomImage>; 
 	SmoothingFilter::Pointer smoothing = SmoothingFilter::New();
 
-	smoothing->SetInput(opening->GetOutput());
-	smoothing->SetNumberOfIterations(2);
+	smoothing->SetInput(closing->GetOutput());
+	smoothing->SetNumberOfIterations(10);
 	smoothing->SetTimeStep(.06);
-	//smoothing->SetVariance(4);
 	smoothing->Update();
 
-	// Trying connected neighbor for region growing
-
 	// Connected Component threshold filter for region growing 
-	using ConnectedFilterType = itk::ConnectedThresholdImageFilter< DicomImage, DicomImage >;
-	// using ConnectedFilterType = itk::NeighborhoodConnectedImageFilter<DicomImage, DicomImage >;
+	using ConnectedFilterType = itk::ConnectedThresholdImageFilter
+	< DicomImage, DicomImage >;
 	ConnectedFilterType::Pointer region = ConnectedFilterType::New();
 
-
-	// The Houndsfield intensity values for bounds are a total guess, adjust experimentally
+	// Houndsfield intensity values determined experimentally
+	// Most grey matter is between 25 and 45
 	dicomSeries::DicomPixelType lowerBound = 25;
 	dicomSeries::DicomPixelType upperBound = 45;
 	DicomImage::IndexType index;
-	// ImageJ seems to indicate this is x, y, z, 512x512x91 images
+
+	// 0 = x, 1 = y, 2 = z (image number in the series)
 	index[0] = 256;
 	index[1] = 256;
-	index[2] = 20;
-
-	DicomImage::SizeType radius;
-
-	radius[0] = 1;
-	radius[1] = 1;
-
-	//region->SetRadius(radius);
+	index[2] = 19; // earliest we can seed without missing region entirely
 
 	std::cout << "Connecting...\n";
 
@@ -109,8 +105,6 @@ dicomSeries::DicomImage::Pointer dicomSeries::RegionGrow() {
 	region->SetReplaceValue(255);
 	region->SetSeed(index);
 	region->Update();
-
-	// Quick mask filter to retrieve Houndsfield values, apparently?
 
 	std::cout << "Masking...\n";
 
