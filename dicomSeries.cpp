@@ -77,7 +77,11 @@ dicomSeries::DicomImage::Pointer dicomSeries::RegionGrow() {
 	SmoothingFilter::Pointer smoothing = SmoothingFilter::New();
 
 	smoothing->SetInput(closing->GetOutput());
-	smoothing->SetNumberOfIterations(10);
+	// fewer iterations seems to result in a blurrier, 
+	// more pixelated image, but supposedly should avoid causing
+	// flat edges. Flat edges are still visible across the top 
+	// of the brain. maybe a smaller time step would solve this
+	smoothing->SetNumberOfIterations(2);  
 	smoothing->SetTimeStep(.06);
 	smoothing->Update();
 

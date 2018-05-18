@@ -10,7 +10,8 @@
 class itkToVtkBridge {
 	const static unsigned int Dimension = 3;
 	using VtkPixelType = signed short;
-	using IntensityFilter = itk::RescaleIntensityImageFilter< dicomSeries::DicomImage, dicomSeries::DicomImage >;
+	using IntensityFilter = itk::RescaleIntensityImageFilter
+		< dicomSeries::DicomImage, dicomSeries::DicomImage >;
 	IntensityFilter::Pointer rescaleFilter;
 public:
 	using VtkImage = itk::Image<VtkPixelType, Dimension>;
@@ -19,7 +20,8 @@ public:
 	ConnectorType::Pointer connector;
 	
 private:	
-	using CastingType = itk::CastImageFilter<dicomSeries::DicomImage, VtkImage>;
+	using CastingType = itk::CastImageFilter
+		<dicomSeries::DicomImage, VtkImage>;
 	CastingType::Pointer caster;
 };
 

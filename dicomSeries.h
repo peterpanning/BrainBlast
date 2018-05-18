@@ -37,8 +37,8 @@ public:
 	// Reader is an ITK image series reader
 	using ReaderType = itk::ImageSeriesReader< DicomImage >;
 
-	
-
+	// Mask allows us to retrieve houndsfield intensity values after 
+	// performing connected component region growing
 	using MaskImageFilter = itk::MaskImageFilter<DicomImage, DicomImage>;
 
 	// 	**CONSTRUCTORS**
@@ -50,22 +50,11 @@ public:
 	dicomSeries(char*);
 
 	// **OTHER FUNCTIONS**
-
 	DicomImage::Pointer GetOutput();
-
 	// Void because it will modify private variables, not return a value
-
 	DicomImage::Pointer RegionGrow();
 
-	// Performs watershed segmentation
-	void gaussianSmoothing(ReaderType::Pointer);
-	int ccRegionGrowing();
-
-	// Making these public to be able to access them in main
-
-
 private:
-
 	char* dirName;
   	DicomNamesGeneratorType::Pointer nameGenerator;
   	FileNamesContainer fileNames;

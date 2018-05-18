@@ -78,8 +78,8 @@ void vtkDicomRenderer::initializeRenderer() {
 
 	// Grey matter has intensities between 25 and 45
 	scalarOpacity->AddPoint(0, 0.0);
-	scalarOpacity->AddPoint(25, .75);
-	scalarOpacity->AddPoint(45, .75);
+	scalarOpacity->AddPoint(25, 1);
+	scalarOpacity->AddPoint(45, 1);
 
 	// Most flesh has intensities between 500 and 1000 according to 
 	// https://www.paraview.org/Wiki/VTK/Examples/Cxx/Medical/MedicalDemo4
