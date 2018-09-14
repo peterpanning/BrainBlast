@@ -48,7 +48,7 @@ dicomSeries::DicomImage::Pointer dicomSeries::RegionGrow() {
 	using StructuringElement = itk::BinaryBallStructuringElement 
 	<DicomPixelType, Dimension>;
 	StructuringElement structure;
-	structure.SetRadius(2);
+	structure.SetRadius(1);
 	structure.CreateStructuringElement();
 
 	std::cout << "Opening...\n";

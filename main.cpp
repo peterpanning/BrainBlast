@@ -27,8 +27,10 @@ int main(int argc, char** argv)
   itkToVtkBridge* bridge = new itkToVtkBridge(d->RegionGrow());
   // Pass it to the renderer
   vtkDicomRenderer v(bridge->connector);
+  // For fun, render a version of the series without any changes
+  vtkDicomRenderer y(dirName);
+  y.render();
   // Render it
   v.render();
-
   return 0;
 }
