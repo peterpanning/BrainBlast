@@ -3,6 +3,11 @@
 #include "itkCurvatureFlowImageFilter.h"
 #include "itkSmoothingRecursiveGaussianImageFilter.h"
 #include "itkDiscreteGaussianImageFilter.h"
+#include "itkGrayscaleErodeImageFilter.h"
+#include "itkBinaryBallStructuringElement.h"
+#include "itkBinaryMorphologicalOpeningImageFilter.h"
+#include "itkNeighborhoodConnectedImageFilter.h"
+#include "itkBinaryMorphologicalClosingImageFilter.h"
 
 dicomSeries::dicomSeries() {
 	// This is a failsafe only, should only be called in the process of 
@@ -38,29 +43,65 @@ dicomSeries::DicomImage::Pointer dicomSeries::GetOutput() {
 }
 
 dicomSeries::DicomImage::Pointer dicomSeries::RegionGrow() {
-	// tried using a gradientAnisotropicDiffusionImageFilter, didn't look very good
-	//using SmoothingFilter = itk::GradientAnisotropicDiffusionImageFilter<DicomImage, DicomImage>; //mediocre output
-	//using SmoothingFilter = itk::SmoothingRecursiveGaussianImageFilter<DicomImage, DicomImage>; // no output? 
-	using SmoothingFilter = itk::CurvatureFlowImageFilter<DicomImage, DicomImage>; // mediocre output
-	//using SmoothingFilter = itk::DiscreteGaussianImageFilter<DicomImage, DicomImage>; // no output?
 
+	// Morphological Operations requires a structuring element
+	using StructuringElement = itk::BinaryBallStructuringElement 
+	<DicomPixelType, Dimension>;
+	StructuringElement structure;
+	structure.SetRadius(1);
+	structure.CreateStructuringElement();
+
+	std::cout << "Opening...\n";
+
+	using OpeningFilter = itk::BinaryMorphologicalOpeningImageFilter 
+	<DicomImage, DicomImage, StructuringElement>;
+    OpeningFilter::Pointer opening = OpeningFilter::New();
+    opening->SetInput(reader->GetOutput());
+    opening->SetKernel(structure);
+    opening->Update();
+
+    std::cout << "Closing...\n";
+
+    using ClosingFilter = itk::BinaryMorphologicalClosingImageFilter 
+    <DicomImage, DicomImage, StructuringElement>;
+    ClosingFilter::Pointer closing = ClosingFilter::New();
+    closing->SetInput(opening->GetOutput());
+    closing->SetKernel(structure);
+    closing->Update();
+
+    std::cout << "Smoothing...\n";
+
+	// Anisotropic edge-preserving smoothing
+	using SmoothingFilter = itk::GradientAnisotropicDiffusionImageFilter
+	<DicomImage, DicomImage>; 
 	SmoothingFilter::Pointer smoothing = SmoothingFilter::New();
-	region = ConnectedThresholdFilter::New();
 
-	smoothing->SetInput(reader->GetOutput());
-	smoothing->SetNumberOfIterations(5);
-	smoothing->SetTimeStep(.1);
-	//smoothing->SetVariance(4);
+	smoothing->SetInput(closing->GetOutput());
+	// fewer iterations seems to result in a blurrier, 
+	// more pixelated image, but supposedly should avoid causing
+	// flat edges. Flat edges are still visible across the top 
+	// of the brain. maybe a smaller time step would solve this
+	smoothing->SetNumberOfIterations(2);  
+	smoothing->SetTimeStep(.06);
 	smoothing->Update();
 
-	// The Houndsfield intensity values for bounds are a total guess, adjust experimentally
+	// Connected Component threshold filter for region growing 
+	using ConnectedFilterType = itk::ConnectedThresholdImageFilter
+	< DicomImage, DicomImage >;
+	ConnectedFilterType::Pointer region = ConnectedFilterType::New();
+
+	// Houndsfield intensity values determined experimentally
+	// Most grey matter is between 25 and 45
 	dicomSeries::DicomPixelType lowerBound = 25;
 	dicomSeries::DicomPixelType upperBound = 45;
 	DicomImage::IndexType index;
-	// ImageJ seems to indicate this is x, y, z, 512x512x91 images
+
+	// 0 = x, 1 = y, 2 = z (image number in the series)
 	index[0] = 256;
 	index[1] = 256;
-	index[2] = 20;
+	index[2] = 19; // earliest we can seed without missing region entirely
+
+	std::cout << "Connecting...\n";
 
 	region->SetInput(smoothing->GetOutput());
 	region->SetLower(lowerBound);
@@ -69,12 +110,14 @@ dicomSeries::DicomImage::Pointer dicomSeries::RegionGrow() {
 	region->SetSeed(index);
 	region->Update();
 
-	// Quick mask filter to retrieve Houndsfield values, apparently?
+	std::cout << "Masking...\n";
 
 	MaskImageFilter::Pointer mask = MaskImageFilter::New();
 	mask->SetInput(reader->GetOutput());
 	mask->SetMaskImage(region->GetOutput());
 	mask->Update();
+
+	std::cout << "Done region growing.\n";
 
 	return mask->GetOutput();
 }
