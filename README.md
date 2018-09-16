@@ -1,5 +1,7 @@
 A small application to view DICOM image scans in 3D, written using C++.
 
+![Image Not Found](./finalImage.png "Rendering of a brain scan")
+
 This is my semester project for CSC 621 at San Francisco State University
 
 
@@ -54,5 +56,7 @@ The `vtkDicomRenderer` class renders Dicom files using the VTK library.
 
 This project does not read the DICOM headers to retrieve slice order, nor does it adequately identify ROI. These basic
 features would be the first goals if work on this project were to continue, unfortunately work on this project has been
-discontinued for now. 
+discontinued for now.
+
+
 
