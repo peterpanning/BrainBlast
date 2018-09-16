@@ -1,5 +1,7 @@
 A small application to view DICOM image scans in 3D, written using C++.
 
+![Image Not Found](./finalImage.png "Rendering of a brain scan")
+
 This is my semester project for CSC 621 at San Francisco State University
 
 
@@ -33,8 +35,28 @@ install binaries locally.
 
 **Project Structure:**
 
+This project is largely modeled after graduate work “3D VISUALIZATION AND SEGMENTATION OF LUNGS USING ITK/VTK/QT FRAMEWORK,”
+by Shuaibu Ali Gombe, grad student at Tallinn University of Technology School of Information Technologies, Estonia.
+
+Without referring to his work as guidance, this project would not have been possible.
 
 The project has all of the relevant .cpp and CMakeLists.txt files within a directory managed under git version control, 
 with a separate build directory directory **outside of version control** which contains the executables, header files of the libraries to be included,
-and files generated during the build process. 
+and files generated during the build process.
+
+The `dicomSeries` class reads, edits, and stores DICOM image files.
+
+The `itkToVtkBridge` class scales and casts pixel intensity values between ITK and VTK acceptable values, then applies
+a provided connector function designed specifically for interactions between these two libraries.
+
+The `vtkDicomRenderer` class renders Dicom files using the VTK library.
+
+
+**Known Issues:**
+
+This project does not read the DICOM headers to retrieve slice order, nor does it adequately identify ROI. These basic
+features would be the first goals if work on this project were to continue, unfortunately work on this project has been
+discontinued for now.
+
+
 
