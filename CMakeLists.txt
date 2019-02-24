@@ -12,30 +12,16 @@ if(VTK_FOUND)
     include(${VTK_USE_FILE})
 endif(VTK_FOUND)
 
-find_package(FLTK REQUIRED)
-
-# If find_package can't find FLTK, setting the path to it may fix that. 
-# The path to fltk is wherever the FLTKConfig.cmake file is. 
-
-if(NOT FLTK_FOUND)
-    set(FLTK_DIR /usr/local/opt/fltk)
-    find_package(FLTK REQUIRED)
-endif(NOT FLTK_FOUND)
-
-# Apparently the include statement here is deprecated, according to CMake (not according to the
-# FLTK CMake guide, though)
-# include(${FLTK_USE_FILE})
-
-find_package(OpenGL REQUIRED)
+#find_package(OpenGL REQUIRED)
 
 # TODO
 # https://stackoverflow.com/questions/9460242/how-to-compile-glut-opengl-project-with-cmake-and-kdevelop-in-linux Should we be using 
 # include_directories for all of these? 
-include_directories(${FLTK_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIRS})
+include_directories(${OPENGL_INCLUDE_DIRS})
 
 add_executable(finalProject main.cpp dicomSeries.cpp vtkDicomRenderer.cpp itkToVtkBridge.cpp)
 
 # CMake apparently uses its own internal names for libraries in this command, according to 
 # https://github.com/IngwiePhoenix/FLTK/blob/master/README.CMake.txt
 
-target_link_libraries (finalProject ${ITK_LIBRARIES} ${VTK_LIBRARIES} ${OPENGL_LIBRARIES} fltk)
+target_link_libraries (finalProject ${ITK_LIBRARIES} ${VTK_LIBRARIES} ${OPENGL_LIBRARIES})
